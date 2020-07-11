@@ -58,8 +58,28 @@ app.post('/students', async (request, response) => {
   })
 })
 
-app.delete('/students', () => {
-  
+// /students/123
+// /students/abc
+app.delete('/students/:id/:name', async (request, response) => {
+  try {
+    const id = request.params.id
+
+    const studentDeleted = await Student.findByIdAndDelete(id)
+
+    response.json({
+      success: true,
+      data: {
+        student: studentDeleted
+      }
+    })
+
+  } catch (error) {
+    response.status(400)
+    response.json({
+      success: false,
+      error: error.message
+    })
+  }
 })
 
 mongoose.connect('mongodb+srv://charles:kodemia123@kodemia-node-live.eet2k.mongodb.net/school?retryWrites=true&w=majority', {
