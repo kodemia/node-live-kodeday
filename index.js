@@ -24,15 +24,42 @@ const Student = mongoose.model('Students', {
   }
 })
 
+app.use(express.json())
+
 app.get('/students', async (request, response) => {
-  const allStudents = await Student.find()
+  try{
+    const allStudents = await Student.find()
+  
+    response.json({
+      success: true,
+      data: {
+        students: allStudents
+      }
+    })
+  } catch (error) {
+    response.status(400)
+    response.json({
+      success: false,
+      error: error.message
+    })
+  }
+})
+
+app.post('/students', async (request, response) => {
+  const studentInfo = request.body
+
+  const newStudent = await Student.create(studentInfo)
 
   response.json({
     success: true,
     data: {
-      students: allStudents
+      student: newStudent
     }
   })
+})
+
+app.delete('/students', () => {
+  
 })
 
 mongoose.connect('mongodb+srv://charles:kodemia123@kodemia-node-live.eet2k.mongodb.net/school?retryWrites=true&w=majority', {
