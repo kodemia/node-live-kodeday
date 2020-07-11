@@ -1,5 +1,8 @@
 
 const mongoose = require('mongoose')
+const express = require('express')
+
+const app = express()
 
 const Student = mongoose.model('Students', {
   name: {
@@ -21,15 +24,24 @@ const Student = mongoose.model('Students', {
   }
 })
 
+app.get('/students', async (request, response) => {
+  const allStudents = await Student.find()
+
+  response.json({
+    success: true,
+    data: {
+      students: allStudents
+    }
+  })
+})
+
 mongoose.connect('mongodb+srv://charles:kodemia123@kodemia-node-live.eet2k.mongodb.net/school?retryWrites=true&w=majority', {
   useNewUrlParser: true, 
   useUnifiedTopology: true
 }, () => {
   console.log('DB connected')
-  Student.create({
-    name: 'Luis',
-    course: 'Ingles',
-    age: 30
+  app.listen(8080, () => {
+    console.log('Server is ready')
   })
 })
 
